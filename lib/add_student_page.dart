@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crud_operation/home_page.dart';
 import 'package:flutter/material.dart';
 
 class AddStudentPage extends StatefulWidget {
+  const AddStudentPage({Key? key}) : super(key: key);
+
   @override
   State<AddStudentPage> createState() => _AddStudentPageState();
 }
@@ -37,7 +41,16 @@ class _AddStudentPageState extends State<AddStudentPage> {
     passwordController.clear();
   }
 
-  void addUser() {}
+  //adding user by creating a collection object first
+  CollectionReference students =
+      FirebaseFirestore.instance.collection('students');
+
+  Future<void> addUser() {
+    return students
+        .add({'name': name, 'email': email, 'password': password})
+        .then((value) => print('user added successfully'))
+        .catchError((error) => print('Failed to add user: $error'));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +149,11 @@ message as shown below.*/
                           }
                           addUser();
                           clearText();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      HomePage()));
                         },
                         child: Text('Register'),
                       ),
